@@ -1,5 +1,6 @@
-﻿using Domain.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Application.DailyDish.Queries.Exists;
+using Application.DailyDish.Queries.List;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -8,22 +9,19 @@ namespace Api.Controllers
     [ApiController]
     public class DailyDishController : ControllerBase
     {
-        private readonly ICacheRepository _cacheRepository;
+        private readonly ISender _sender;
 
-        public DailyDishController(ICacheRepository cacheRepository)
+        public DailyDishController(IMediator mediator)
         {
-            _cacheRepository = cacheRepository;
+            _sender = mediator;
         }
 
-        [HttpGet]
-        public ActionResult Get(string key) => Ok(_cacheRepository.Get<string>(key));
+        [HttpGet("list")]
+        public async Task<Dictionary<string, object>> ListAsync([FromQuery]ListQuery query, CancellationToken cancellationToken = default)
+            => await _sender.Send(query, cancellationToken);
 
-        [HttpPut]
-        public ActionResult Put(string key, string value)
-        {
-            _cacheRepository.Set(key, value);
-
-            return Created(key, value);
-        }
+        [HttpGet("exists")]
+        public async Task<IEnumerable<string>> ExistsAsync([FromQuery]ExistsQuery query, CancellationToken cancellationToken = default)
+            => await _sender.Send(query, cancellationToken);
     }
 }
