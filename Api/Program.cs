@@ -1,6 +1,6 @@
-using Domain.Interfaces;
 using Domain.Options;
-using Infrastructure.Repositories;
+using Domain;
+using Infrastructure;
 using Application;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +10,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddMemoryCache();
-builder.Services.Configure<CacheOptions>(builder.Configuration.GetSection("CacheOptions"));
-builder.Services.AddScoped<ICacheRepository, CacheRepository>();
+builder.Services.AddDomain(builder.Configuration.GetSection);
+builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 var app = builder.Build();
 
