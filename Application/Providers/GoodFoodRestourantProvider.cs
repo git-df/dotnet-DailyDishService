@@ -1,6 +1,5 @@
 ﻿using Domain.Consts;
 using Domain.Interfaces;
-using Domain.Responses;
 
 namespace Application.Providers
 {
@@ -15,7 +14,7 @@ namespace Application.Providers
             return response;
         }
 
-        public class GoodFoodDto : DailyDishBaseResponse
+        public class GoodFoodDto
         {
             public string Name { get; set; }
             public double Price { get; set; }

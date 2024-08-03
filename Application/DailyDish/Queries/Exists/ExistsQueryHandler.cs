@@ -1,10 +1,11 @@
 ﻿using Domain.Consts;
 using Domain.Interfaces;
+using Domain.Models;
 using MediatR;
 
 namespace Application.DailyDish.Queries.Exists
 {
-    public class ExistsQueryHandler : IRequestHandler<ExistsQuery, IEnumerable<string>>
+    public class ExistsQueryHandler : IRequestHandler<ExistsQuery, IEnumerable<ExistsDto>>
     {
         private readonly ICacheRepository _cacheRepository;
 
@@ -13,12 +14,13 @@ namespace Application.DailyDish.Queries.Exists
             _cacheRepository = cacheRepository;
         }
 
-        public async Task<IEnumerable<string>> Handle(ExistsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ExistsDto>> Handle(ExistsQuery request, CancellationToken cancellationToken)
         {
-            var existsNames = _cacheRepository.Get<IEnumerable<string>>(CacheKeys.ExistsDataRestourant);
+            var existsNames = _cacheRepository.Get<IEnumerable<ExistsDto>>(CacheKeys.ExistsDataRestourant);
 
             return existsNames?
-                .Where(x => request.Names is null || request.Names.Contains(x)) ?? [];
+                .Where(x => request.Names is null || request.Names.Contains(x.Name))
+                .Where(x => x.CreatedDate.Date == DateTime.Now.Date) ?? [];
         }
     }
 }

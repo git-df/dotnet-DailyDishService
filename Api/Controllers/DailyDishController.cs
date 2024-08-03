@@ -1,5 +1,6 @@
 ﻿using Application.DailyDish.Queries.Exists;
 using Application.DailyDish.Queries.List;
+using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ namespace Api.Controllers
             => await _sender.Send(query, cancellationToken);
 
         [HttpGet("exists")]
-        public async Task<IEnumerable<string>> ExistsAsync([FromQuery]ExistsQuery query, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<ExistsDto>> ExistsAsync([FromQuery]ExistsQuery query, CancellationToken cancellationToken = default)
             => await _sender.Send(query, cancellationToken);
     }
 }

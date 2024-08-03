@@ -1,6 +1,5 @@
 ﻿using Domain.Consts;
 using Domain.Interfaces;
-using Domain.Responses;
 
 namespace Application.Providers
 {
@@ -15,7 +14,7 @@ namespace Application.Providers
             return response;
         }
 
-        public class CafeAndRockDto : DailyDishBaseResponse
+        public class CafeAndRockDto
         {
             public List<string> Menu { get; set; }
         }

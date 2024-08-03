@@ -6,9 +6,10 @@ namespace Domain
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddDomain(this IServiceCollection services, Func<string, object> getSectionFunc)
+        public static IServiceCollection AddDomain(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<CacheOptions>(((IConfigurationSection)getSectionFunc("CacheOptions")).Bind);
+            services.Configure<CacheOptions>(configuration.GetSection("CacheOptions").Bind);
+            services.Configure<HangfireOptions>(configuration.GetSection("HangfireOptions").Bind);
 
             return services;
         }
