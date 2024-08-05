@@ -1,10 +1,9 @@
 ﻿
-
 namespace Domain.Interfaces
 {
     public interface ICacheRepository
     {
-        T Get<T>(string cacheKey);
-        void Set(string cacheKey, object value);
+        Task<T> GetAsync<T>(string cacheKey, CancellationToken cancellationToken = default);
+        Task SetAsync(string cacheKey, object value, CancellationToken cancellationToken = default);
     }
 }

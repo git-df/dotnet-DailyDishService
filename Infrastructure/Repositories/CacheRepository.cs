@@ -1,25 +1,25 @@
 ﻿using Domain.Interfaces;
 using Domain.Options;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace Infrastructure.Repositories
 {
     public class CacheRepository : ICacheRepository
     {
-        private readonly IMemoryCache _memoryCache;
         private readonly CacheOptions _cacheOptions;
+        private readonly IFusionCache _cache;
 
-        public CacheRepository(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions)
+        public CacheRepository(IFusionCache cache, IOptions<CacheOptions> cacheOptions)
         {
-            _memoryCache = memoryCache;
+            _cache = cache;
             _cacheOptions = cacheOptions.Value;
         }
 
-        public T Get<T>(string cacheKey) 
-            => _memoryCache.TryGetValue(cacheKey, out T value) ? value : default;
+        public async Task<T> GetAsync<T>(string cacheKey, CancellationToken cancellationToken = default)
+            => await _cache.GetOrDefaultAsync<T>(cacheKey, token: cancellationToken);
 
-        public void Set(string cacheKey, object value)
-            => _memoryCache.Set(cacheKey, value, _cacheOptions.Options);
+        public async Task SetAsync(string cacheKey, object value, CancellationToken cancellationToken = default)
+            => await _cache.SetAsync(cacheKey, value, _cacheOptions.Options, token: cancellationToken);
     }
 }

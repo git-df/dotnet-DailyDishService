@@ -2,7 +2,6 @@
 using Domain.Interfaces;
 using Domain.Models;
 using MediatR;
-using System.Linq;
 
 namespace Application.DailyDish.Queries.List
 {
@@ -17,13 +16,22 @@ namespace Application.DailyDish.Queries.List
 
         public async Task<Dictionary<string, object>> Handle(ListQuery request, CancellationToken cancellationToken)
         {
-            var existsNames = _cacheRepository.Get<IEnumerable<ExistsDto>>(CacheKeys.ExistsDataRestourant);
+            var existsNames = await _cacheRepository
+                .GetAsync<IEnumerable<ExistsDto>>(CacheKeys.ExistsDataRestourant, cancellationToken) ?? [];
 
-            return existsNames?
+            var tasks = existsNames?
                 .Where(x => request.Names is null || request.Names.Contains(x.Name))
                 .Where(x => x.CreatedDate.Date == DateTime.Now.Date)
-                .Select(x => x.Name)
-                .ToDictionary(x => x, _cacheRepository.Get<object>) ?? [];
+                .Select(async x =>
+                {
+                    var value = await _cacheRepository.GetAsync<object>(x.Name, cancellationToken);
+                    return (x.Name, Value: value);
+                });
+
+            var results = await Task.WhenAll(tasks);
+
+            return results
+                .ToDictionary(x => x.Name, x => x.Value);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿
-namespace Domain.Parameters
+﻿namespace Domain.Parameters
 {
     public class DailyDishBaseParameters
     {

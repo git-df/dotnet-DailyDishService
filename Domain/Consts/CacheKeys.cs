@@ -1,5 +1,4 @@
-﻿
-namespace Domain.Consts
+﻿namespace Domain.Consts
 {
     public static class CacheKeys
     {

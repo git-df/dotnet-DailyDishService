@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace Domain.Options
 {
     public class CacheOptions
     {
-        public int AbsoluteExpiration { get; set; }
-        public CacheItemPriority Priority { get; set; }
+        public int DefaultCacheDuration { get; set; }
+        public CacheItemPriority DefaultPriority { get; set; }
 
-        public MemoryCacheEntryOptions Options => new MemoryCacheEntryOptions()
-            .SetAbsoluteExpiration(TimeSpan.FromSeconds(AbsoluteExpiration))
-            .SetPriority(Priority);
+        public FusionCacheEntryOptions Options => new FusionCacheEntryOptions()
+            .SetDuration(TimeSpan.FromSeconds(DefaultCacheDuration))
+            .SetPriority(DefaultPriority);
     }
 }

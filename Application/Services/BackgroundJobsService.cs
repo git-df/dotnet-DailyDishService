@@ -1,7 +1,6 @@
 ﻿using Domain.Consts;
 using Domain.Interfaces;
 using Domain.Models;
-using System.Threading;
 
 namespace Application.Services
 {
@@ -20,7 +19,7 @@ namespace Application.Services
         {
             var now = DateTime.Now;
             var allNames = _restourantProviders.Select(x => x.Name);
-            var exists = _cacheRepository.Get<IEnumerable<ExistsDto>>(CacheKeys.ExistsDataRestourant) ?? [];
+            var exists = await _cacheRepository.GetAsync<IEnumerable<ExistsDto>>(CacheKeys.ExistsDataRestourant, cancellationToken) ?? [];
             exists = exists.Where(x => x.CreatedDate.Date == now.Date);
 
             if (exists.Count() == allNames.Count()) 
@@ -43,17 +42,20 @@ namespace Application.Services
 
             var results = await Task.WhenAll(tasks);
 
-            var newNames = results
+            var newNamesTasks = results
                 .Where(x => x.Value is not null)
-                .Select(x =>
+                .Select(async x =>
                 {
-                    _cacheRepository.Set(x.Name, x.Value);
+                    await _cacheRepository.SetAsync(x.Name, x.Value, cancellationToken);
                     return new ExistsDto(
                         CreatedDate: now,
                         Name: x.Name);
                 });
 
-            _cacheRepository.Set(CacheKeys.ExistsDataRestourant, exists.Concat(newNames));
+            var newNames = await Task.WhenAll(newNamesTasks);
+
+
+            await _cacheRepository.SetAsync(CacheKeys.ExistsDataRestourant, exists.Union(newNames), cancellationToken);
         }
     }
 }

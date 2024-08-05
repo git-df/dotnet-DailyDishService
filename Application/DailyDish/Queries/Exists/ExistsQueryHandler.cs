@@ -16,7 +16,7 @@ namespace Application.DailyDish.Queries.Exists
 
         public async Task<IEnumerable<ExistsDto>> Handle(ExistsQuery request, CancellationToken cancellationToken)
         {
-            var existsNames = _cacheRepository.Get<IEnumerable<ExistsDto>>(CacheKeys.ExistsDataRestourant);
+            var existsNames = await _cacheRepository.GetAsync<IEnumerable<ExistsDto>>(CacheKeys.ExistsDataRestourant, cancellationToken);
 
             return existsNames?
                 .Where(x => request.Names is null || request.Names.Contains(x.Name))
