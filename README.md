@@ -28,7 +28,7 @@ The project consists of the following main components:
 2. Navigate to the project directory:
 
    ```bash
-   cd daily-dish-api
+   cd dotnet-DailyDishService\Api\
    
 3. Restore dependencies:
 
