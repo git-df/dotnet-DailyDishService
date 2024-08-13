@@ -10,6 +10,7 @@ namespace Domain
         {
             services.Configure<CacheOptions>(configuration.GetSection("CacheOptions").Bind);
             services.Configure<HangfireOptions>(configuration.GetSection("HangfireOptions").Bind);
+            services.Configure<RandomDishOptions>(configuration.GetSection("RandomDishOptions").Bind);
 
             return services;
         }

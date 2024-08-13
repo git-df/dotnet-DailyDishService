@@ -9,6 +9,7 @@ namespace Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddScoped<ICacheRepository, CacheRepository>();
+            services.AddScoped<IRandomDishRepository, RandomDishRepository>();
 
             return services;
         }
